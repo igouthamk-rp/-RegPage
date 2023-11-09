@@ -1,0 +1,129 @@
+﻿@page
+@model _RegPage.Pages.AllPages.ViewDetailsModel
+@{
+    Layout = "LoginLayout.cshtml";
+}
+
+<div >
+<div class="container">
+    <div class="row pt-2">
+        <div class="col">
+            <h2 class="text-primary">All User details</h2>
+        </div>
+        <hr />
+    </div>
+
+
+    <br/>
+        @{
+            if(TempData.ContainsKey("ErrorMessage"))
+            {
+                <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
+                </div>
+            }
+        }
+    <div class="d-flex justify-content-evenly flex-row ms-5 me-5">
+      
+        <form class="col-6 col-sm-12">
+              <p>
+                <input type="text" asp-for="SearchString"/>
+                <input type="submit" value="Search" class="btn-info"/>
+                <a asp-page="ViewDetails" class="mx-2">Back to list</a>
+                   
+                </p>
+        </form>
+        
+
+        <form method="post">
+            <div class="d-flex justify-content-start">
+            <input type="submit" value="Export to Excel" asp-page-handler="Export" class="text-success"/>
+                </div>
+        </form>
+ 
+    </div>
+
+    
+    <br />
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Email
+                </th>
+                <th>
+                    <a asp-page="ViewDetails" class="text-black" asp-route-sortOrder="@Model.nameSort">FullName</a>
+                </th>
+                <th>
+                    MobileNumber
+                </th>
+                <th>
+                    Salutation
+                </th>
+                <th>
+                    <a asp-page="ViewDetails" class="text-black" asp-route-sortOrder="@Model.genSort">Gender</a>
+                </th>
+                <th>
+                    <a asp-page="ViewDetails" class="text-black" asp-route-sortOrder="@Model.dateSort">Date Of Birth</a>
+                </th>
+                <th>
+                    Password
+                </th>
+                <th>
+                    <a asp-page="ViewDetails" class="text-black" asp-route-sortOrder="@Model.modSort">Modified Date</a>
+                </th>
+                <th>
+                    Action
+                </th>
+
+
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var obj in Model.Credentials)
+            {
+                <tr>
+                    <td width="5%">@obj.Email</td>
+                    <td width="5%">@obj.FullName</td>
+                    <td width="5%">@obj.MobileNumber</td>
+                    <td width="5%">@obj.Salutation</td>
+                    <td width="5%">@obj.Gender</td>
+                    <td width="12%">@obj.DOB.ToString("MM-dd-yyyy")</td>
+                    <td width="5%">@obj.Password</td>
+                    <td width="12%">@obj.ModDate</td>
+                    <td width="10%">
+                        
+                        <div class="btn-group" role="group">
+                            <a asp-page="Edit" asp-route-email="@obj.Email" class="btn btn-primary btn-sm mx-2">
+                                &nbsp;Edit &nbsp;
+
+                            </a>
+                            <a asp-page="Delete" asp-route-email="@obj.Email" class="btn btn-danger btn-sm ">
+                                Delete
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+    @{
+        var prevDisabled = !Model.Credentials.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.Credentials.HasNextPage ? "disabled" : "";
+    }
+    <a asp-page="/AllPages/ViewDetails"
+       asp-route-pageIndex="@(Model.Credentials.PageIndex - 1)"
+       class="btn btn-primary rounded-pill @prevDisabled">
+       Previous
+    </a>
+    <a asp-page="/AllPages/ViewDetails"
+       asp-route-pageIndex="@(Model.Credentials.PageIndex + 1)"
+       class="btn btn-primary rounded-pill @nextDisabled">
+        Next
+    </a>
+</div>
